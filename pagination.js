@@ -1,11 +1,13 @@
 let data = [{
-        name: 'item',
+        name: 'item1',
         img: 'https://loremflickr.com/400/400?lock=41',
+        link: 'https://google.com',
         description: "Description to go here"
     },
     {
         name: 'item',
         img: 'https://loremflickr.com/400/400?lock=42',
+        link: 'https://google.com',
         description: "Description to go here"
     },
     {
@@ -88,6 +90,7 @@ let data = [{
 var amount = 4;
 var current = 0;
 var parent = document.getElementById('parent');
+
 var currentSpan = document.getElementById('current');
 var totalSpan = document.getElementById('total');
 
@@ -111,37 +114,30 @@ const generateItems = function (parent, data, current, amount) {
     currentSpan.innerHTML = current + 1;
     totalSpan.innerHTML = Math.floor(data.length / amount) + 1;
     var currentData = data.slice(current * amount, (current + 1) * amount);
+
     currentData.forEach(element => {
-        var child = document.createElement('div');
-        var card = document.createElement('div');
-        var cardbody = document.createElement('div');
-        var img = document.createElement('img');
-        var h5 = document.createElement('h5');
-        var p = document.createElement('p');
-        child.id = element.name;
-        var text = document.createTextNode(element.name);
-        var description = document.createTextNode(element.description);
-        child.setAttribute("class", "col-sm-3");
-        card.setAttribute("class", "card mb-4");
-        cardbody.setAttribute("class", "card-body");
-        h5.setAttribute("class", "card-title");
-        p.setAttribute("class", "card-text");
-        img.setAttribute("class", "img-fluid");
+        var template = document.querySelector('#card-template');
+        var clone = template.content.cloneNode(true);
+        var img = clone.querySelectorAll("img")[0];
         img.setAttribute("src", element.img);
-        card.appendChild(img);
-        h5.appendChild(text);
-        p.appendChild(description);
-        cardbody.appendChild(h5);
-        cardbody.appendChild(p);
-        card.appendChild(cardbody);
-        child.appendChild(card);
-        parent.appendChild(child);
+        var h5 = clone.querySelectorAll("h5")[0];
+        h5.textContent = element.name;
+        var p = clone.querySelectorAll("p")[0];
+        p.textContent = element.description;
+
+        var link = clone.querySelectorAll("a")[0];
+        if (element.link != null) {
+
+            link.href = element.link;
+        } else {
+            link.remove()
+        }
+
+        parent.appendChild(clone);
+
     });
     var child = document.createElement('div');
 };
-
-generateItems(parent, data, current, amount);
-
 
 function next() {
 
@@ -163,3 +159,5 @@ function back() {
     current -= 1;
     generateItems(parent, data, current, amount);
 }
+
+generateItems(parent, data, current, amount);
